@@ -4,8 +4,9 @@ def main():
     with open('input') as f:
         containment_graph = read_containment_graph(f)
     all_containing_bags = containment_graph.ancestors('shiny gold')
-    print(all_containing_bags)
     print(f'The number of bags that transitively contain shiny gold is {len(all_containing_bags) - 1}')
+    bags_in_shiny_gold = containment_graph.descendants_weight('shiny gold') - 1
+    print(f'The number of bags you must carry inside your shiny gold bag is {bags_in_shiny_gold}')
 
 def read_containment_graph(iterable):
     graph = Graph()
@@ -66,12 +67,14 @@ class Graph:
     def __init__(self):
         self._adjacency = {}
         self._ancestry = {}
+        self._weights = {}
 
     def add_edge(self, edge):
         forward_neighbours = self._adjacency.setdefault(edge.src, [])
         forward_neighbours.append(edge.dst)
         backward_neighbours = self._ancestry.setdefault(edge.dst, [])
         backward_neighbours.append(edge.src)
+        self._weights[(edge.src, edge.dst)] = edge.weight
 
     def add_edges(self, edges):
         for edge in edges:
@@ -89,6 +92,17 @@ class Graph:
         for direct_ancestor in direct_ancestors:
             self._ancestors(direct_ancestor, ancestors)
         return ancestors
+
+    def descendants_weight(self, root):
+        visited = set()
+        return self._descendants_weight(root, visited)
+
+    def _descendants_weight(self, node, visited):
+        direct_descendants = self._adjacency.get(node, [])
+        descendants_weight = 0
+        for direct_descendant in direct_descendants:
+            descendants_weight += self._weights[(node, direct_descendant)] * self._descendants_weight(direct_descendant, visited)
+        return 1 + descendants_weight
 
 class Edge:
     def __init__(self, src, dst, weight):
