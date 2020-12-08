@@ -47,7 +47,7 @@ class NopInstruction:
         pass
 
     def execute(self, program):
-        pass
+        program._program_counter += 1
 
 class JmpInstruction:
     def __init__(self, offset):
@@ -62,6 +62,7 @@ class AccInstruction:
 
     def execute(self, program):
         program._accumulator += self._integer
+        program._program_counter += 1
 
 if __name__ == '__main__':
     main()
