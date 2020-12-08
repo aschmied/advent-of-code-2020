@@ -16,52 +16,23 @@ def read_containment_graph(iterable):
     return graph
 
 def parse_rule(rule_string):
-    tokens = tokenize_rule_string(rule_string)
+    match = re.match(r'^(.*) bags contain no other bags.$', rule_string)
+    if match:
+        groups = match.groups()
+        return [Edge(groups[0], None, 0)]
 
-    containing_bag_colour = read_colour(tokens)
-    skip_token(tokens, 'contain')
-    
-    count = read_count(tokens)
-    if count == 0:
-        return [Edge(containing_bag_colour, None, 0)]
+    match = re.match(r'^(.*) bags contain (\d)+ ([a-z ]+) bags?\.$', rule_string)
+    if match:
+        groups = match.groups()
+        return [Edge(groups[0], groups[2], int(groups[1]))]
 
-    edges = []
-    while True:
-        contained_bag_colour = read_colour(tokens)
-        edges.append(Edge(containing_bag_colour, contained_bag_colour, count))
-        if len(tokens) == 0:
-            return edges
-        count = read_count(tokens)
+    match = re.match(r'^(.*) bags contain (\d) ([a-z ]+) bags?, (\d) ([a-z ]+) bags?.$', rule_string)
+    if match:
+        groups = match.groups()
+        return [Edge(groups[0], groups[2], int(groups[1])),
+            Edge(groups[0], groups[4], int(groups[3]))]
 
-def tokenize_rule_string(rule_string):
-    tokens_and_blanks = re.split(r'[ ,.]', rule_string)
-    return list(filter(lambda s: s != '', tokens_and_blanks))
-
-def read_colour(tokens):
-    colour_words = []
-    current_token = tokens.pop(0)
-    while current_token != 'bag' and current_token != 'bags':
-        colour_words.append(current_token)
-        current_token = tokens.pop(0)
-    return ' '.join(colour_words)
-
-def skip_token(tokens, token_to_skip):
-    skipped = tokens.pop(0)
-    if skipped != token_to_skip:
-        raise RuntimeError(f'Expected {token_to_skip} but found {skipped}')
-
-def read_count(tokens):
-    head = tokens.pop(0)
-    try:
-        return int(head)
-    except ValueError:
-        pass
-
-    if head != 'no':
-        raise RuntimeError(f'Found {head} but expected no')
-    skip_token(tokens, 'other')
-    skip_token(tokens, 'bags')
-    return 0
+    raise RuntimeError(f'Failed matching for {rule_string}')
 
 class Graph:
     def __init__(self):
