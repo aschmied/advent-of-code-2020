@@ -1,5 +1,38 @@
 import collections
 
+def main():
+    numbers = read_numbers('input')
+    first_invalid_number = find_first_invalid_number(numbers, 25)
+    print(f'The first invalid number is {first_invalid_number}')
+
+
+def read_numbers(filename):
+    with open(filename) as f:
+        return [int(line.strip()) for line in f]
+
+def find_first_invalid_number(numbers, preamble_length):
+    last_n = LastN(preamble_length)
+    for number in numbers[0:preamble_length]:
+        last_n.add(number)
+
+    for number in numbers[preamble_length:]:
+        number1, number2 = find_two_numbers_that_sum_to(last_n, number)
+        if number1 is None:
+            return number
+        last_n.add(number)
+    raise RuntimeError('No invalid number found')
+
+def find_two_numbers_that_sum_to(last_n, target_sum):
+    for number in last_n:
+        target_number = target_sum - number
+        if target_number not in last_n:
+            continue
+        if target_number != number:
+            return number, target_number
+        if last_n.count(target_number) > 1:
+            return target_number, target_number
+    return None, None
+
 class LastN:
     def __init__(self, number_to_keep):
         self._number_to_keep = number_to_keep
@@ -35,3 +68,9 @@ class LastN:
 
     def __contains__(self, obj):
         return obj in self._counts.keys()
+
+    def __iter__(self):
+        return self._queue.__iter__()
+
+if __name__ == '__main__':
+    main()

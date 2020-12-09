@@ -37,3 +37,10 @@ class TestLastN(unittest.TestCase):
 
         last_n.add(1)
         self.assertFalse(0 in last_n)
+
+    def test_iteration(self):
+        last_n = LastN(3)
+        last_n.add(0)
+        last_n.add(1)
+        for actual, expected in zip(last_n, range(2)):
+            self.assertEqual(actual, expected)
