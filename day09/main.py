@@ -5,6 +5,10 @@ def main():
     first_invalid_number = find_first_invalid_number(numbers, 25)
     print(f'The first invalid number is {first_invalid_number}')
 
+    start, end = find_contiguous_sum(numbers, first_invalid_number)
+    min_in_range = min(numbers[start:end])
+    max_in_range = max(numbers[start:end])
+    print(f'The sum of the smallest and largest numbers in the range is {min_in_range + max_in_range}')
 
 def read_numbers(filename):
     with open(filename) as f:
@@ -20,7 +24,30 @@ def find_first_invalid_number(numbers, preamble_length):
         if number1 is None:
             return number
         last_n.add(number)
+
     raise RuntimeError('No invalid number found')
+
+def find_contiguous_sum(numbers, target_sum):
+    if len(numbers) == 0:
+        return -1, -1
+
+    start = 0
+    end = 0
+    current_sum = 0
+    while start < len(numbers) and end < len(numbers):
+        while current_sum < target_sum:
+            current_sum += numbers[end]
+            end += 1
+        if current_sum == target_sum:
+            return start, end
+
+        while current_sum > target_sum:
+            current_sum -= numbers[start]
+            start += 1
+        if current_sum == target_sum:
+            return start, end
+
+    return -1, -1
 
 def find_two_numbers_that_sum_to(last_n, target_sum):
     for number in last_n:
