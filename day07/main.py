@@ -16,23 +16,28 @@ def read_containment_graph(iterable):
     return graph
 
 def parse_rule(rule_string):
-    match = re.match(r'^(.*) bags contain no other bags.$', rule_string)
+    match = re.match(r'^([a-z ]+) bags contain no other bags.$', rule_string)
     if match:
         groups = match.groups()
         return [Edge(groups[0], None, 0)]
 
-    match = re.match(r'^(.*) bags contain (\d)+ ([a-z ]+) bags?\.$', rule_string)
-    if match:
-        groups = match.groups()
-        return [Edge(groups[0], groups[2], int(groups[1]))]
+    match = re.match(r'^([a-z ]+) bags contain ', rule_string)
+    groups = match.groups()
+    src_colour = groups[0]
+    start_index = len(match.group(0))
+    rule_string = rule_string[start_index:]
 
-    match = re.match(r'^(.*) bags contain (\d) ([a-z ]+) bags?, (\d) ([a-z ]+) bags?.$', rule_string)
-    if match:
+    edges = []
+    while len(rule_string) > 0:
+        match = re.match(r'^(\d)+ ([a-z ]+) bags?[,.] ?', rule_string)
         groups = match.groups()
-        return [Edge(groups[0], groups[2], int(groups[1])),
-            Edge(groups[0], groups[4], int(groups[3]))]
+        count = int(groups[0])
+        dst_colour = groups[1]
+        edges.append(Edge(src_colour, dst_colour, count))
+        start_index = len(match.group(0))
+        rule_string = rule_string[start_index:]
 
-    raise RuntimeError(f'Failed matching for {rule_string}')
+    return edges
 
 class Graph:
     def __init__(self):
