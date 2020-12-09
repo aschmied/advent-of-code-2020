@@ -7,8 +7,7 @@ from main import Graph
 class TestParseRule(unittest.TestCase):
     def test_none_contained(self):
         edges = parse_rule('faded blue bags contain no other bags.')
-        self.assertEqual(len(edges), 1)
-        self.assertEqual(edges, [Edge('faded blue', None, 0)])
+        self.assertEqual(edges, [])
 
     def test_one_contained(self):
         edges = parse_rule('bright white bags contain 1 shiny gold bag.')

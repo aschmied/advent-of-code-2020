@@ -16,10 +16,8 @@ def read_containment_graph(iterable):
     return graph
 
 def parse_rule(rule_string):
-    match = re.match(r'^([a-z ]+) bags contain no other bags.$', rule_string)
-    if match:
-        groups = match.groups()
-        return [Edge(groups[0], None, 0)]
+    if re.match(r'^([a-z ]+) bags contain no other bags.$', rule_string):
+        return []
 
     match = re.match(r'^([a-z ]+) bags contain ', rule_string)
     groups = match.groups()
