@@ -16,52 +16,26 @@ def read_containment_graph(iterable):
     return graph
 
 def parse_rule(rule_string):
-    tokens = tokenize_rule_string(rule_string)
+    if re.match(r'^([a-z ]+) bags contain no other bags.$', rule_string):
+        return []
 
-    containing_bag_colour = read_colour(tokens)
-    skip_token(tokens, 'contain')
-    
-    count = read_count(tokens)
-    if count == 0:
-        return [Edge(containing_bag_colour, None, 0)]
+    match = re.match(r'^([a-z ]+) bags contain ', rule_string)
+    groups = match.groups()
+    src_colour = groups[0]
+    start_index = len(match.group(0))
+    rule_string = rule_string[start_index:]
 
     edges = []
-    while True:
-        contained_bag_colour = read_colour(tokens)
-        edges.append(Edge(containing_bag_colour, contained_bag_colour, count))
-        if len(tokens) == 0:
-            return edges
-        count = read_count(tokens)
+    while len(rule_string) > 0:
+        match = re.match(r'^(\d)+ ([a-z ]+) bags?[,.] ?', rule_string)
+        groups = match.groups()
+        count = int(groups[0])
+        dst_colour = groups[1]
+        edges.append(Edge(src_colour, dst_colour, count))
+        start_index = len(match.group(0))
+        rule_string = rule_string[start_index:]
 
-def tokenize_rule_string(rule_string):
-    tokens_and_blanks = re.split(r'[ ,.]', rule_string)
-    return list(filter(lambda s: s != '', tokens_and_blanks))
-
-def read_colour(tokens):
-    colour_words = []
-    current_token = tokens.pop(0)
-    while current_token != 'bag' and current_token != 'bags':
-        colour_words.append(current_token)
-        current_token = tokens.pop(0)
-    return ' '.join(colour_words)
-
-def skip_token(tokens, token_to_skip):
-    skipped = tokens.pop(0)
-    if skipped != token_to_skip:
-        raise RuntimeError(f'Expected {token_to_skip} but found {skipped}')
-
-def read_count(tokens):
-    head = tokens.pop(0)
-    try:
-        return int(head)
-    except ValueError:
-        pass
-
-    if head != 'no':
-        raise RuntimeError(f'Found {head} but expected no')
-    skip_token(tokens, 'other')
-    skip_token(tokens, 'bags')
-    return 0
+    return edges
 
 class Graph:
     def __init__(self):
