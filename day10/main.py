@@ -35,18 +35,25 @@ def count_valid_arrangements(numbers):
     '''
     if len(numbers) < 2:
         raise RuntimeError(f'Need at least 2 numbers but got {len(numbers)}')
-    return _count_valid_arrangements(numbers[0], numbers[1:])
+    return _count_valid_arrangements(numbers, numbers[0], 1, {})
 
-def _count_valid_arrangements(previous_number, remaining_numbers):
-    next_number = remaining_numbers[0]
+def _count_valid_arrangements(numbers, previous_number, from_index, memo):
+    next_number = numbers[from_index]
     if next_number - previous_number > 3:
         return 0
 
-    if len(remaining_numbers) == 1:
+    if from_index == len(numbers) - 1:
         return 1
 
-    return (_count_valid_arrangements(previous_number, remaining_numbers[1:]) +
-        _count_valid_arrangements(remaining_numbers[0], remaining_numbers[1:]))
+    memo_key = (previous_number, from_index)
+    if memo_key in memo:
+        return memo[memo_key]
+
+    count = (_count_valid_arrangements(numbers, previous_number, from_index + 1, memo) +
+        _count_valid_arrangements(numbers, numbers[from_index], from_index + 1, memo))
+    memo[memo_key] = count
+
+    return count
 
 if __name__ == '__main__':
     main()
