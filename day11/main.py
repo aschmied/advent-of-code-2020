@@ -26,8 +26,7 @@ class GameOfLife:
         return sum([row.count(self._OCCUPIED) for row in self._current_grid])
 
     def step_until_stable(self):
-        stable = False
-        while not stable:
+        while True:
             next_grid = self.step()
             if next_grid == self._current_grid:
                 return
@@ -48,12 +47,18 @@ class GameOfLife:
 
     def _next_state_for_cell(self, row, col):
         current_grid = self._current_grid
-        if current_grid[row][col] == self._INACCESSIBLE:
+        current_state = current_grid[row][col]
+        if current_state == self._INACCESSIBLE:
             return self._INACCESSIBLE
+
         occupied_neighbours = self._count_occupied_neighbours(current_grid, row, col)
+        if occupied_neighbours == 0:
+            return self._OCCUPIED
         if occupied_neighbours >= self._extinction_threshold:
             return self._EMPTY
-        return self._OCCUPIED
+
+        return current_state
+
 
     def _count_occupied_neighbours(self, current_grid, row, col):
         row_offsets = [-1, -1, -1, 0, 0, 1, 1, 1]

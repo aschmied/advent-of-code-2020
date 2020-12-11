@@ -3,7 +3,7 @@ import unittest
 from main import GameOfLife
 
 class TestGameOfLife(unittest.TestCase):
-    def test_all_empty(self):
+    def test_step__all_empty(self):
         grid = [
             '.L.',
             'LLL',
@@ -15,7 +15,7 @@ class TestGameOfLife(unittest.TestCase):
         g = GameOfLife(grid, extinction_threshold=4)
         self.assertListEqual(g.step(), next_grid)
 
-    def test_some_die(self):
+    def test_step__some_die(self):
         grid = [
             '.#.',
             '###',
@@ -26,6 +26,18 @@ class TestGameOfLife(unittest.TestCase):
             '.#.']
         g = GameOfLife(grid, extinction_threshold=4)
         self.assertListEqual(g.step(), next_grid)
+
+    def test_step__new_life(self):
+        grid = [
+            'L.#',
+            'L.#',
+            '#..']
+        next_grid = [
+            '#.#',
+            'L.#',
+            '#..']
+        g = GameOfLife(grid, extinction_threshold=4)
+        self.assertEqual(g.step(), next_grid)
 
     def test_count_occupied__empty(self):
         g = GameOfLife(['.L.'], extinction_threshold=1)
