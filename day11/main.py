@@ -1,7 +1,14 @@
 import copy
 
 def main():
-    pass
+    grid = read_grid('input')
+    g = GameOfLife(grid, extinction_threshold=4)
+    g.step_until_stable()
+    print(f'The number of occupied spaces at stable state is {g.count_occupied()}')
+
+def read_grid(filename):
+    with open(filename) as f:
+        return [line.strip() for line in f]
 
 class GameOfLife:
     _INACCESSIBLE = '.'
