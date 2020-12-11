@@ -15,6 +15,9 @@ class GameOfLife:
         self._cols = len(terrain_grid[0])
         self._steps = 0
 
+    def count_occupied(self):
+        return sum([row.count(self._OCCUPIED) for row in self._current_grid])
+
     def step_until_stable(self):
         stable = False
         while not stable:

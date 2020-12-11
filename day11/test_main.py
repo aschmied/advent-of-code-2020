@@ -12,8 +12,8 @@ class TestGameOfLife(unittest.TestCase):
             '.#.',
             '###',
             '.#.']
-        game_of_life = GameOfLife(grid, extinction_threshold=4)
-        self.assertListEqual(game_of_life.step(), next_grid)
+        g = GameOfLife(grid, extinction_threshold=4)
+        self.assertListEqual(g.step(), next_grid)
 
     def test_some_die(self):
         grid = [
@@ -24,5 +24,13 @@ class TestGameOfLife(unittest.TestCase):
             '.#.',
             '#L#',
             '.#.']
-        game_of_life = GameOfLife(grid, extinction_threshold=4)
-        self.assertListEqual(game_of_life.step(), next_grid)
+        g = GameOfLife(grid, extinction_threshold=4)
+        self.assertListEqual(g.step(), next_grid)
+
+    def test_count_occupied__empty(self):
+        g = GameOfLife(['.L.'], extinction_threshold=1)
+        self.assertEqual(g.count_occupied(), 0)
+
+    def test_count_occupied__non_empty(self):
+        g = GameOfLife(['.#.'], extinction_threshold=1)
+        self.assertEqual(g.count_occupied(), 1)
