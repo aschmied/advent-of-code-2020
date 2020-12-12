@@ -61,17 +61,17 @@ def find_two_numbers_that_sum_to(last_n, target_sum):
     return None, None
 
 class LastN:
-    def __init__(self, number_to_keep):
-        self._number_to_keep = number_to_keep
+    def __init__(self, max_size):
+        self._max_size = max_size
         self._queue = collections.deque()
         self._counts = collections.defaultdict(lambda: 0)
 
     def add(self, obj):
         self._append_to_queue(obj)
         self._add_to_counts(obj)
-        if len(self._queue) > self._number_to_keep:
+        if len(self._queue) > self._max_size:
             removed = self._pop_from_queue(obj)
-            self._remove_from_counts(removed)
+            self._subtract_from_counts(removed)
 
     def _append_to_queue(self, obj):
         self._queue.append(obj)
@@ -82,7 +82,7 @@ class LastN:
     def _pop_from_queue(self, obj):
         return self._queue.popleft()
 
-    def _remove_from_counts(self, obj):
+    def _subtract_from_counts(self, obj):
         self._counts[obj] -= 1
         if self._counts[obj] == 0:
             del(self._counts[obj])
