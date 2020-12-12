@@ -2,7 +2,7 @@ import unittest
 
 from main import intersection_of_chars
 
-class TestCountUnionOfChars(unittest.TestCase):
+class TestIntersectionOfChars(unittest.TestCase):
     def test_empty(self):
         self.assertEqual(intersection_of_chars([]), set())
 

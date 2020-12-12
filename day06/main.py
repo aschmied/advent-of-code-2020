@@ -7,14 +7,17 @@ def process_input(iterable):
     total_yes_for_all_in_group = 0
     for chunk in iterate_chunks(iterable):
         yes_answers_by_traveller = [line.strip() for line in chunk]
-        total_yes_answers += count_unique_chars(''.join(yes_answers_by_traveller))
+        total_yes_answers += len(union_of_chars(yes_answers_by_traveller))
         total_yes_for_all_in_group += len(intersection_of_chars(yes_answers_by_traveller))
 
     print(f'Sum of total yes answer counts is {total_yes_answers}')
     print(f'Sum of questions answered yes by everyone counts is {total_yes_for_all_in_group}')
 
-def count_unique_chars(string):
-    return len(set(list(string)))
+def union_of_chars(strings):
+    chars = []
+    for string in strings:
+        chars.extend(list(string))
+    return set(chars)
 
 def intersection_of_chars(strings):
     if len(strings) == 0:
