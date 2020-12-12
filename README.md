@@ -24,6 +24,24 @@ Some solutions have tests. To run the tests do e.g.:
 > python -m unittest discover
 ```
 
+## My Favourite Solutions
+
+### [Day 4](https://adventofcode.com/2020/day/4)
+
+Coming up with the representation of the passport validation rules in the `is_passport_strictly_valid` method was enjoyable.
+
+### [Day 5](https://adventofcode.com/2020/day/5)
+
+Binary search in disguise.
+
+### [Day 9](https://adventofcode.com/2020/day/9)
+
+In one possible solution, two data structures working together solve the problem.
+
+### [Day 10](https://adventofcode.com/2020/day/10)
+
+My path to a solution highlighted the power of dynamic programming. I tried a brute force recursive approach first. It didn't finish after a few minutes, so I added memoization. It finished faster than I could blink.
+
 ## License
 
 [2-clause BSD](https://opensource.org/licenses/BSD-2-Clause)
