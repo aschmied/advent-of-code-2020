@@ -77,12 +77,11 @@ class WaypointShip:
         if degrees % 90 != 0:
             raise ValueError(f'Degrees must be a multiple of 90. Got {degrees}')
 
+        e = self._direction_east
+        n = self._direction_north
         rotation_matrix = self._get_rotation_matrix(_normalize_degrees(degrees))
-        rotated_direction = (
-            rotation_matrix[0][0] * self._direction_east + rotation_matrix[0][1] * self._direction_north,
-            rotation_matrix[1][0] * self._direction_east + rotation_matrix[1][1] * self._direction_north)
-        self._direction_east = rotated_direction[0]
-        self._direction_north = rotated_direction[1]
+        self._direction_east = rotation_matrix[0][0] * e + rotation_matrix[0][1] * n
+        self._direction_north = rotation_matrix[1][0] * e + rotation_matrix[1][1] * n
 
     def _get_rotation_matrix(self, degrees):
         radians = math.radians(degrees)
