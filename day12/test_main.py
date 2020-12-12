@@ -1,11 +1,11 @@
 import unittest
 
 from main import Bearing
-from main import Ship
+from main import AbsoluteShip
 
-class TestShip(unittest.TestCase):
+class TestAbsoluteShip(unittest.TestCase):
     def setUp(self):
-        self._ship = Ship()
+        self._ship = AbsoluteShip()
 
     def test_forward(self):
         self._ship.forward(1)

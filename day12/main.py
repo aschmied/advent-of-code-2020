@@ -2,16 +2,16 @@ import enum
 
 def main():
     commands = read_movement_commands('input')
-    ship = Ship()
+    absolute_ship = AbsoluteShip()
     for command in commands:
-        command.execute(ship)
-    print(f'Manhattan distance from origin is {abs(ship.east()) + abs(ship.north())}')
+        command.execute(absolute_ship)
+    print(f'Manhattan distance from origin is {abs(absolute_ship.east()) + abs(absolute_ship.north())} for absolute ship')
 
 def read_movement_commands(filename):
     with open(filename) as f:
         return [parse_command(line.strip()) for line in f]
 
-class Ship:
+class AbsoluteShip:
     def __init__(self):
         self._east = 0
         self._north = 0
