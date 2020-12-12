@@ -2,9 +2,14 @@ import copy
 
 def main():
     grid = read_grid('input')
-    g = GameOfLife(grid, extinction_threshold=4)
+
+    g = GameOfLife(grid, extinction_threshold=4, neighbour_policy='adjacent')
     g.step_until_stable()
-    print(f'The number of occupied spaces at stable state is {g.count_occupied()}')
+    print(f'The number of occupied seats at stable state is {g.count_occupied()} with adjacent neighbour policy')
+
+    g =GameOfLife(grid, extinction_threshold=5, neighbour_policy='line-of-sight')
+    g.step_until_stable()
+    print(f'The number of occupied seats at stable state is {g.count_occupied()} with line-of-sight neighbour policy')
 
 def read_grid(filename):
     with open(filename) as f:
@@ -15,9 +20,10 @@ class GameOfLife:
     _EMPTY = 'L'
     _OCCUPIED = '#'
 
-    def __init__(self, terrain_grid, extinction_threshold):
+    def __init__(self, terrain_grid, extinction_threshold, neighbour_policy):
         self._current_grid = terrain_grid
         self._extinction_threshold = extinction_threshold
+        self._count_occupied_neighbours = self._get_count_occupied_neighbours(neighbour_policy)
         self._rows = len(terrain_grid)
         self._cols = len(terrain_grid[0])
         self._steps = 0
@@ -59,19 +65,49 @@ class GameOfLife:
 
         return current_state
 
+    def _get_count_occupied_neighbours(self, neighbour_policy):
+        if neighbour_policy == 'adjacent':
+            return self._count_occupied_immediate_neighbours
+        elif neighbour_policy == 'line-of-sight':
+            return self._count_occupied_line_of_sight_neighbours
+        else:
+            raise ValueError(f'Invalid neighbour_policy: {neighbour_policy}')
 
-    def _count_occupied_neighbours(self, current_grid, row, col):
+    def _count_occupied_immediate_neighbours(self, current_grid, row, col):
         row_offsets = [-1, -1, -1, 0, 0, 1, 1, 1]
         col_offsets = [-1, 0, 1, -1, 1, -1, 0, 1]
         neighbours_count = 0
         for ro, co in zip(row_offsets, col_offsets):
             r = row + ro
             c = col + co
-            if r < 0 or c < 0 or r >= self._rows or c >= self._cols:
+            if not self._offset_in_bounds(r, c):
                 continue
             if current_grid[r][c] == self._OCCUPIED:
                 neighbours_count += 1
         return neighbours_count
+
+    def _count_occupied_line_of_sight_neighbours(self, current_grid, row, col):
+        row_offsets = [-1, -1, -1, 0, 0, 1, 1, 1]
+        col_offsets = [-1, 0, 1, -1, 1, -1, 0, 1]
+
+        neighbours_count = 0
+        for ro, co in zip(row_offsets, col_offsets):
+            r = row + ro
+            c = col + co
+            while self._offset_in_bounds(r, c) and current_grid[r][c] == self._INACCESSIBLE:
+                r = r + ro
+                c = c + co
+
+            if not self._offset_in_bounds(r, c):
+                continue
+
+            if current_grid[r][c] == self._OCCUPIED:
+                neighbours_count += 1
+
+        return neighbours_count
+
+    def _offset_in_bounds(self, row, col):
+        return row >= 0 and col >= 0 and row < self._rows and col < self._cols
 
 if __name__ == '__main__':
     main()
