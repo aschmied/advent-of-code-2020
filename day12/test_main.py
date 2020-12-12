@@ -1,7 +1,8 @@
 import unittest
 
-from main import Bearing
 from main import AbsoluteShip
+from main import Bearing
+from main import WaypointShip
 
 class TestAbsoluteShip(unittest.TestCase):
     def setUp(self):
@@ -55,3 +56,22 @@ class TestAbsoluteShip(unittest.TestCase):
     def test_turn__past_zero_negative(self):
         self._ship.turn(-360 - 90)
         self.assertEqual(self._ship.bearing(), Bearing.SOUTH)
+
+class TestWaypointShip(unittest.TestCase):
+    def setUp(self):
+        self._ship = WaypointShip()
+
+    def test_forward(self):
+        self._ship.forward(2)
+        self.assertEqual(self._ship.east(), 20)
+        self.assertEqual(self._ship.north(), 2)
+
+    def test_move(self):
+        self._ship.move(Bearing.WEST, 2)
+        self.assertEqual(self._ship.direction_east(), 8)
+        self.assertEqual(self._ship.direction_north(), 1)
+
+    def test_turn(self):
+        self._ship.turn(90)
+        self.assertEqual(self._ship.direction_east(), -1)
+        self.assertEqual(self._ship.direction_north(), 10)
