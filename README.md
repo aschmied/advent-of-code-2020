@@ -42,6 +42,10 @@ In one possible solution, two data structures working together solve the problem
 
 My path to a solution highlighted the power of dynamic programming. I tried a brute force recursive approach first. It didn't finish after a few minutes, so I added memoization. It finished faster than I could blink.
 
+### [Day 13](https://adventofcode.com/2020/day/10)
+
+Part B of this one stumped me. I managed to solve it using Chinese Remainder Theorem. However, I am convinced there is a simpler solution because the modulos in CRT are only required to be *pairwise coprime*, whereas in my formualtion each modulo is *prime*.
+
 ## License
 
 [2-clause BSD](https://opensource.org/licenses/BSD-2-Clause)
